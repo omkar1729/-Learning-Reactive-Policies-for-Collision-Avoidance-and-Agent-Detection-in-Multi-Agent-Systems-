@@ -72,8 +72,9 @@ class Scenario(BaseScenario):
         dist_min = agent1.size + agent2.size+1
         return True if dist < dist_min else False
 
-    def is_tag_agent(self, agent, world):
+    def is_tag(self, agent, world):
         lst_pos = []
+        lst_vel=[]
         view_distance = 0.2
         for agnt in world.agents :
             if agnt.adversary:
@@ -81,36 +82,21 @@ class Scenario(BaseScenario):
                     angle1 = np.arctan2(float(agnt.state.p_pos[0]), float(agnt.state.p_pos[1]))
                     angle2 = np.arctan2(float(agent.state.p_pos[0]), float(agent.state.p_pos[1]))
                     delta_pos = agent.state.p_pos - agnt.state.p_pos
-                    print("in is_tag")
+                    #print("in is_tag")
                     if np.sqrt(np.sum(np.square(delta_pos))) <= view_distance + agent.size and abs(
                             angle1 - angle2) <= 0.785398 and (
                             np.sign((agent.state.p_vel[0])) == np.sign((delta_pos[0])) and (
                             np.sign((agent.state.p_vel[1])) == np.sign((delta_pos[1]))) ):
-                        lst_pos.append(agent.state.p_pos[0])
+                        lst_pos.append([agent.state.p_pos[0],agent.state.p_pos[1]])
+                        lst_vel.append([agent.state.p_vel[0],agent.state.p_vel[1]])
                         
-                        return True
+                        
                     else:
                         continue
-        print("sdfsdfs")
-        return False
+        #print("sdfsdfs")
+        return lst_pos,lst_vel
 
-    def is_tag_adv(self, agent):
-
-        view_distance = 10
-        for agnt in world.agents:
-            if (agnt != agent):
-                angle1 = np.arctan2(float(agnt.state.p_pos[0]), float(agnt.state.p_pos[1]))
-                angle2 = np.arctan2(float(agent.state.p_pos[0]), float(agent.state.p_pos[1]))
-                delta_pos = agent.state.p_pos - agnt.state.p_pos
-                if np.sqrt(np.sum(np.square(delta_pos))) <= view_distance + agent.size and abs(
-                        angle1 - angle2) <= 0.785398 and (
-                        np.sign((agent.state.p_vel[0])) == np.sign((delta_pos[0])) and (
-                        np.sign((agent.state.p_vel[1])) == np.sign((delta_pos[1]))) ):
-                    return True
-                else:
-                    continue
-
-        return False
+   
 
     # return all agents that are not adversaries
     def good_agents(self, world):
@@ -132,12 +118,38 @@ class Scenario(BaseScenario):
         shape = True
         adversaries = self.adversaries(world)
         if shape:  # reward can optionally be shaped (increased reward for increased distance from adversary)
-            for adv in adversaries:
-                rew += np.sqrt(np.sum(np.square(agent.state.p_pos - adv.state.p_pos)))
+            a_dist_from_goal = np.sqrt(np.sum(np.square(agent.state.p_pos - world.landmarks[0].state.p_pos)))    
+            
+            if len(agent.tag_list)>0:
+                for agt in agent.tag_list:
+                    dist_from_agnt = np.sqrt(np.sum(np.square(np.asarray(agt) - agent.state.p_pos)))
+                    dist_from_goal = np.sqrt(np.sum(np.square(np.asarray(agt) - world.landmarks[0].state.p_pos)))
+               
+                    rew += (1-dist_from_agnt + dist_from_goal)*10
+                   
+                       
+
+                
+                       
+                
+
+                
+               
+        
+        if world.goal_flag:
+            rew = -100
+    	            
+                    
+                
         if agent.collide:
-            for a in adversaries:
-                if self.is_collision(a, agent):
-                    rew -= 10
+            for a in adversaries :
+                if a.adversary:
+                    if self.is_collision(a, agent):
+                        rew += 50
+                    
+        rew -= (1-a_dist_from_goal)*10
+        
+        return rew
 
         # agents are penalized for exiting the screen, so that they can be caught by the adversaries
     def bound(x):
@@ -152,39 +164,57 @@ class Scenario(BaseScenario):
 
         return rew
 
-    def adversary_reward(self, agent, world):
+    def adversary_reward(self, adver, world):
         # Adversaries are rewarded for collisions with agents
         rew = 0
         shape = True
-        agents = self.good_agents(world)
-        adversaries = self.adversaries(world)
-        if shape:  # reward can optionally be shaped (decreased reward for increased distance from agents)
-            for adv in adversaries:
-                rew -= min([np.sqrt(np.sum(np.square(a.state.p_pos - adv.state.p_pos))) for a in agents])
-        if agent.collide:
-            for ag in agents:
-                for adv in adversaries:
-                    if self.is_tag_agent(adv,world):
-                        rew-=1
-                    if self.is_collision(ag, adv):
-                        rew += 10
+        agents = world.agents
+        
+        goal_dist = np.sqrt(np.sum(np.square(adver.state.p_pos - world.landmarks[0].state.p_pos)))
+       
+        if shape:  # reward can optionally be shaped (increased reward for increased distance from adversary)
+            
+                #rew += np.sqrt(np.sum(np.square(agent.state.p_pos - adv.state.p_pos)))
+               if len(adver.tag_list)>0:
+                   for agt in adver.tag_list:
+                   
+                       dist = np.sqrt(np.sum(np.square(np.asaaray(agt) - adv.state.p_pos)))
+               
+                
+                
+                       rew-= 10*(1-dist)
+                
+
+                
+               
+        
+        if world.goal_flag:
+            rew = 100
+    	            
+                    
+                
+        if adver.collide:
+            for a in agents :
+                if not a.adversary:
+                    if self.is_collision(a, adver):
+                        rew -= 100
+                    
+        rew += (1-goal_dist)*10
         
         return rew
 
     def observation(self, agent, world):
         # get positions of all entities in this agent's reference frame
+        agent.tag_list=[]
+        
         entity_pos = []
         for entity in world.landmarks:
             if not entity.boundary:
                 entity_pos.append(entity.state.p_pos - agent.state.p_pos)
         # communication of all other agents
         comm = []
-        other_pos = []
-        other_vel = []
-        for other in world.agents:
-            if other is agent: continue
-            comm.append(other.state.c)
-            other_pos.append(other.state.p_pos - agent.state.p_pos)
-            if not other.adversary:
-                other_vel.append(other.state.p_vel)
+        other_pos,other_vel  = self.is_tag(agent,world)
+        agent.tag_list=other_pos
+        
+        
         return np.concatenate([agent.state.p_vel] + [agent.state.p_pos] + entity_pos + other_pos + other_vel)

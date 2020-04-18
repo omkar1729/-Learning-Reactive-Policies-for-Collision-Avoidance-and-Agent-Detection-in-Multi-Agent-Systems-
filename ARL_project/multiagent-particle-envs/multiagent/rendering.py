@@ -240,10 +240,10 @@ class FilledPolygon(Geom):
             glVertex3f(p[0], p[1],0)  # draw each vertex
         glEnd()
 
-def make_circle(radius=10, res=30, filled=True):
+def make_circle(radius=10, res=80, filled=True):
     points = []
     for i in range(res):
-        ang = 2*math.pi*i / res
+        ang = 2*math.pi*(i) / res
         points.append((math.cos(ang)*radius, math.sin(ang)*radius))
     if filled:
         return FilledPolygon(points)

@@ -45,7 +45,7 @@ class Entity(object):
         self.state = EntityState()
         # mass
         self.initial_mass = 1.0
-
+        
     @property
     def mass(self):
         return self.initial_mass
@@ -77,6 +77,8 @@ class Agent(Entity):
         self.action = Action()
         # script behavior to execute
         self.action_callback = None
+        
+        self.tag_list=[]
 
 # multi-agent world
 class World(object):
@@ -97,6 +99,9 @@ class World(object):
         # contact response parameters
         self.contact_force = 1e+2
         self.contact_margin = 1e-3
+        # goal capture flag
+        self.goal_flag=False
+
 
     # return all entities in the world
     @property
