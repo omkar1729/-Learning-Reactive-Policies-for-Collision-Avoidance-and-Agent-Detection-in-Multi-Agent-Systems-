@@ -97,7 +97,7 @@ class Scenario(BaseScenario):
     def is_tag(self, agent, world):
         lst_pos = []
         lst_vel=[]
-        view_distance = 0.2
+        view_distance = 0.1
         for agnt in world.agents :
             if agnt.adversary:
                 if (agnt != agent):
@@ -147,7 +147,7 @@ class Scenario(BaseScenario):
                     dist_from_agnt = np.sqrt(np.sum(np.square(np.asarray(agt) - agent.state.p_pos)))
                     dist_from_goal = np.sqrt(np.sum(np.square(np.asarray(agt) - world.landmarks[0].state.p_pos)))
 
-                    rew += (1-dist_from_agnt + dist_from_goal)*10
+                    rew += (1-dist_from_agnt + dist_from_goal)*1000
 
 
 
@@ -159,7 +159,7 @@ class Scenario(BaseScenario):
 
 
         if world.goal_flag:
-            rew = -100
+            rew = -10000
 
 
 
@@ -167,9 +167,9 @@ class Scenario(BaseScenario):
             for a in adversaries :
                 if a.adversary:
                     if self.is_collision(a, agent):
-                        rew += 50
+                        rew += 5000
 
-        rew -= (1-a_dist_from_goal)*10
+        rew -= (1-a_dist_from_goal)*1000
 
         return rew
 
@@ -204,14 +204,14 @@ class Scenario(BaseScenario):
 
 
 
-                       rew-= 10*(1-dist)
+                       rew-= 1000*(1-dist)
 
 
 
 
 
         if world.goal_flag:
-            rew = 100
+            rew = 10000
 
 
 
@@ -219,9 +219,9 @@ class Scenario(BaseScenario):
             for a in agents :
                 if not a.adversary:
                     if self.is_collision(a, adver):
-                        rew -= 100
+                        rew -= 10000
 
-        rew += (1-goal_dist)*10
+        rew += (1-goal_dist)*1000
 
         return rew
 
