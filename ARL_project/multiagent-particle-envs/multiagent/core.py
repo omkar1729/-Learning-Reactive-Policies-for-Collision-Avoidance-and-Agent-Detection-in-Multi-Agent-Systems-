@@ -199,7 +199,7 @@ class World(object):
 
                 entity.state.p_pos += entity.state.p_vel * self.dt
 
-            entity.state.p_pos +=entity.state.p_vel * self.dt
+            
 
 
     def update_agent_state(self, agent):
