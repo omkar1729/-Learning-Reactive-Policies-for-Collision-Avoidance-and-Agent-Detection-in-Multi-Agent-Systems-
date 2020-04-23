@@ -1,11 +1,13 @@
 import numpy as np
-from multiagent.core import World, Agent, Landmark
+from multiagent.core import World, Agent, Landmark, Wall
 from multiagent.scenario import BaseScenario
 
 
 class Scenario(BaseScenario):
     def make_world(self):
         world = World()
+        wall=Wall()
+
         # set any world properties first
         world.dim_c = 2
         num_good_agents = 2
@@ -37,6 +39,13 @@ class Scenario(BaseScenario):
 
 
     def reset_world(self, world):
+
+
+        agent_pos=[[0.1,0.1],[-0.1,-0.1]]
+        advers_pos=[[0.5,-0.5],[-0.5,0.5]]
+
+        adv_cnt=0
+        agnt_cnt=0
         # random properties for agents
         for i, agent in enumerate(world.agents):
             agent.color = np.array([0.35, 0.85, 0.35]) if not agent.adversary else np.array([0.85, 0.35, 0.35])
@@ -44,8 +53,21 @@ class Scenario(BaseScenario):
         for i, landmark in enumerate(world.landmarks):
             landmark.color = np.array([0.25, 0.25, 0.25])
         # set random initial states
+
+
+
+
         for agent in world.agents:
-            agent.state.p_pos = np.random.uniform(-1, +1, world.dim_p)
+
+            if(agent.adversary):
+
+                agent.state.p_pos = np.asarray(advers_pos[adv_cnt])
+                adv_cnt += 1
+            else:
+                agent.state.p_pos = np.asarray(agent_pos[agnt_cnt])
+                agnt_cnt += 1
+
+            #agent.state.p_pos = np.random.uniform(-1, +1, world.dim_p)
             agent.state.p_vel = np.zeros(world.dim_p)
             agent.state.c = np.zeros(world.dim_c)
         for i, landmark in enumerate(world.landmarks):

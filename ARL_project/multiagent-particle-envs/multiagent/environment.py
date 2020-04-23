@@ -231,6 +231,7 @@ class MultiAgentEnv(gym.Env):
             self.render_geoms_xform = []
             for entity in self.world.entities:
                 geom = rendering.make_circle(entity.size)
+
                 xform = rendering.Transform()
                 if 'agent' in entity.name:
                     geom.set_color(*entity.color, alpha=0.5)
@@ -240,6 +241,10 @@ class MultiAgentEnv(gym.Env):
                 geom.add_attr(xform)
                 self.render_geoms.append(geom)
                 self.render_geoms_xform.append(xform)
+            geom1 = rendering.make_wall(0.5)
+            self.render_geoms.append(geom1)
+            xform1 = rendering.Transform()
+            self.render_geoms_xform.append(xform1)
 
             # add geoms to viewer
             for viewer in self.viewers:

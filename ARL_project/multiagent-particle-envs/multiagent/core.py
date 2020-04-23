@@ -3,19 +3,30 @@ import numpy as np
 
 class Wall:
     def __init__(self):
-        self.x_c = []
-        self.y_c = []
-        self.height = []
-        self.width = []
+        self.x_c = 0
+        self.y_c = 0
+        self.height = 0.8
+        self.width = 0.8
 
     def check_wall(self, x, y):
+
+        if (x > self.x_c + self.width / 2) or (x < self.x_c - self.width / 2 ) or (y > self.y_c + self.height / 2) or (y < self.y_c - self.height / 2):
+            return True
+        return False
+
+    # physical/external base state of all entites
+class Obstacle:
+    def __init__(self):
+        self.x_c = [0]
+        self.y_c = [0]
+        self.height = [0.1]
+        self.width = [0.2]
+
+    def check_obstacle(self, x, y):
         for i in range(len(self.x_c)):
             if (x < self.x_c[i] + self.width[i] / 2) and (x > self.x_c[i] - self.width[i] / 2 ) and (y < self.y_c[i] + self.height[i] / 2) and (y > self.y_c[i] - self.height[i] / 2):
                 return True
         return False
-
-    # physical/external base state of all entites
-
 
 class EntityState(object):
     def __init__(self):
@@ -184,6 +195,7 @@ class World(object):
     # integrate physical state
     def integrate_state(self, p_force):
         wall=Wall()
+        obst=Obstacle()
         for i, entity in enumerate(self.entities):
             if not entity.movable: continue
             entity.state.p_vel = entity.state.p_vel * (1 - self.damping)
@@ -196,8 +208,10 @@ class World(object):
                                                                       np.square(
                                                                           entity.state.p_vel[1])) * entity.max_speed
             if not wall.check_wall(entity.state.p_pos[0], entity.state.p_pos[1]):
+                # if not obst.check_obstacle(entity.state.p_pos[0], entity.state.p_pos[1]):
 
                 entity.state.p_pos += entity.state.p_vel * self.dt
+
 
             
 
