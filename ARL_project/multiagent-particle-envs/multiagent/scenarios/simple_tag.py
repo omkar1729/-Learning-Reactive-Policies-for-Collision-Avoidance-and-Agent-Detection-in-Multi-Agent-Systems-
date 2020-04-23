@@ -42,7 +42,7 @@ class Scenario(BaseScenario):
 
 
         agent_pos=[[0.1,0.1],[-0.1,-0.1]]
-        advers_pos=[[0.5,-0.5],[-0.5,0.5]]
+        advers_pos=[[0.3,-0.3],[-0.3,0.3]]
 
         adv_cnt=0
         agnt_cnt=0

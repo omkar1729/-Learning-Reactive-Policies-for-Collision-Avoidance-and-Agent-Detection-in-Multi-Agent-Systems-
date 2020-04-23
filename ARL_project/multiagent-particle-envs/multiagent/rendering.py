@@ -128,6 +128,18 @@ class Viewer(object):
         self.add_onetime(geom)
         return geom
 
+    def draw_obstacle(self, filled=False, **attrs):
+        geom = make_obstacles(filled=filled)
+        _add_attrs(geom, attrs)
+        self.add_onetime(geom)
+        return geom
+
+    def draw_cone(self, filled=False, **attrs):
+        geom = make_cone(filled=filled)
+        _add_attrs(geom, attrs)
+        self.add_onetime(geom)
+        return geom
+
     def draw_polygon(self, v, filled=True, **attrs):
         geom = make_polygon(v=v, filled=filled)
         _add_attrs(geom, attrs)
@@ -272,7 +284,7 @@ class FilledPolygon(Geom):
         glEnd()
 
         color = (
-        self._color.vec4[0] * 0.5, self._color.vec4[1] * 0.5, self._color.vec4[2] * 0.5, self._color.vec4[3] * 0.5)
+            self._color.vec4[0] * 0.5, self._color.vec4[1] * 0.5, self._color.vec4[2] * 0.5, self._color.vec4[3] * 0.5)
         glColor4f(*color)
         glBegin(GL_LINE_LOOP)
         for p in self.v:
@@ -292,9 +304,49 @@ def make_circle(radius=10, res=80, filled=True):
 
 
 def make_wall(radius=40, res=4, filled=False):
-    points = [[0.9,0.9],[0.9,-0.9],[-0.9,-0.9],[-0.9,0.9]]
+    points = [[0.9, 0.9], [0.9, -0.9], [-0.9, -0.9], [-0.9, 0.9]]
+
+    if filled:
+        return FilledPolygon(points)
+    else:
+        return PolyLine(points, True)
 
 
+def make_obstacles(filled=True):
+    points = [[-0.4, 0.4], [-0.4, 0.6], [0.4, 0.6], [0.4, 0.4]]
+
+    if filled:
+        return FilledPolygon(points)
+    else:
+        return PolyLine(points, True)
+
+
+def make_obstacles1(filled=True):
+    points1 = [[-0.6, -0.6], [-0.6, 0.6], [-0.4, 0.6], [-0.4, -0.6]]
+    points2 = [[0.4, -0.6], [0.4, 0.6], [0.6, 0.6], [0.6, -0.6]]
+
+    if filled:
+        rect1 = FilledPolygon(points1)
+        rect2 = FilledPolygon(points2)
+        return rect1, rect2
+
+
+def make_cone(radius=10.0, res=80, filled=True, centre=[0, 0], vel=[0,0]):
+    points = []
+    res=80
+
+    angle = np.arctan2(vel[0], vel[1])
+    angle_init = angle - 0.392
+    angle_final = angle + 0.392
+    delta = 0.785398 / float(res)
+
+    angle = angle_init
+    while (res):
+        points.append((math.cos(angle) * radius, math.sin(angle) * radius))
+        angle = angle + delta
+        res -= 1
+
+    points.append((centre[0],centre[1]))
     if filled:
         return FilledPolygon(points)
     else:
