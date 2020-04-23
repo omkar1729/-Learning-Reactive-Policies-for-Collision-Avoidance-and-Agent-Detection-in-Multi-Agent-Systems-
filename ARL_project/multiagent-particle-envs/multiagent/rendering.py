@@ -331,11 +331,11 @@ def make_obstacles1(filled=True):
         return rect1, rect2
 
 
-def make_cone(radius=10.0, res=80, filled=True, centre=[0, 0], vel=[0,0]):
+def make_cone(radius=10.0, res=80, filled=True, centre_x=0,centre_y=0, vel_x=0,vel_y=0):
     points = []
     res=80
-
-    angle = np.arctan2(vel[0], vel[1])
+    print(vel_x,vel_y)
+    angle = np.arctan2(vel_x, vel_y)
     angle_init = angle - 0.392
     angle_final = angle + 0.392
     delta = 0.785398 / float(res)
@@ -346,7 +346,7 @@ def make_cone(radius=10.0, res=80, filled=True, centre=[0, 0], vel=[0,0]):
         angle = angle + delta
         res -= 1
 
-    points.append((centre[0],centre[1]))
+    points.append((centre_x,centre_y))
     if filled:
         return FilledPolygon(points)
     else:

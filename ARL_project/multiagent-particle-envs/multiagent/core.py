@@ -28,6 +28,8 @@ class Obstacle:
                 return True
         return False
 
+
+
 class EntityState(object):
     def __init__(self):
         # physical position
