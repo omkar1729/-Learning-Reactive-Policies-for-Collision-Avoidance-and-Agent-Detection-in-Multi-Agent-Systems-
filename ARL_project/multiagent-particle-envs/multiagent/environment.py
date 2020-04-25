@@ -105,9 +105,9 @@ class MultiAgentEnv(gym.Env):
         reward = np.sum(reward_n)
         if self.shared_reward:
             reward_n = [reward] * self.n
-        if(self.world.goal_flag==True):
-
-            print(self.world.goal_flag)
+        # if(self.world.goal_flag==True):
+        #
+        #     print(self.world.goal_flag)
 
         return obs_n, reward_n, done_n, info_n
 
@@ -262,7 +262,7 @@ class MultiAgentEnv(gym.Env):
                     self.render_geoms_xform.append(xform4)
 
                 else:
-                    print(entity.render_vel)
+                    #print(entity.render_vel)
                     geom = rendering.make_circle(entity.size)
                     # xform = rendering.Transform()
 

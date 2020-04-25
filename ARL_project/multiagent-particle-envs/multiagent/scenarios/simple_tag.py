@@ -45,7 +45,7 @@ class Scenario(BaseScenario):
         adv_cnt = 0
         agnt_cnt = 0
 
-        world.goal_flag=False
+        world.goal_flag = False
 
         # random properties for agents
         for i, agent in enumerate(world.agents):
@@ -107,7 +107,7 @@ class Scenario(BaseScenario):
                         angle1 - angle2) <= 0.785398 and (
                         np.sign((agent.state.p_vel[0])) == np.sign((delta_pos[0])) and (
                         np.sign((agent.state.p_vel[1])) == np.sign((delta_pos[1])))):
-                    #print('tagged')
+                    # print('tagged')
                     lst_pos.append([agent.state.p_pos[0], agent.state.p_pos[1]])
                     lst_vel.append([agent.state.p_vel[0], agent.state.p_vel[1]])
                 # else:
@@ -151,7 +151,7 @@ class Scenario(BaseScenario):
         # self.check_reach_goal(agent,world)
 
         if world.goal_flag:
-            rew -=1000
+            rew -= 1000
 
         if agent.collide:
             for a in adversaries:
@@ -165,31 +165,15 @@ class Scenario(BaseScenario):
 
         # agents are penalized for exiting the screen, so that they can be caught by the adversaries
 
-    def check_reach_goal(self,agent,world):
-        if np.sqrt(np.sum(np.square(np.asarray(agent.state.p_pos) - world.landmarks[0].state.p_pos)))<0.1:
-            world.goal_flag=True
-
-
-
-
-    def bound(x):
-        if x < 0.9:
-            return 0
-        if x < 1.0:
-            return (x - 0.9) * 10
-        return min(np.exp(2 * x - 2), 10)
-        for p in range(world.dim_p):
-            x = abs(agent.state.p_pos[p])
-            rew -= bound(x)
-
-        return rew
+    def check_reach_goal(self, agent, world):
+        if np.sqrt(np.sum(np.square(np.asarray(agent.state.p_pos) - world.landmarks[0].state.p_pos))) < 0.1:
+            world.goal_flag = True
 
     def adversary_reward(self, adver, world):
         # Adversaries are rewarded for collisions with agents
         rew = 0
         shape = True
         agents = world.agents
-
 
         goal_dist = np.sqrt(np.sum(np.square(adver.state.p_pos - world.landmarks[0].state.p_pos)))
 
@@ -210,7 +194,7 @@ class Scenario(BaseScenario):
             for a in agents:
                 if not a.adversary:
                     if self.is_collision(a, adver):
-                        adver.caught=True
+                        adver.caught = True
                         # adver.state.p_vel[0]=0.0
                         # adver.state.p_vel[1] = 0.0
                         rew -= 1000
