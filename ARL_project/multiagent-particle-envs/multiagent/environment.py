@@ -320,6 +320,8 @@ class MultiAgentEnv(gym.Env):
             self.render_geoms.append(geom3)
             xform3 = rendering.Transform()
             self.render_geoms_xform.append(xform3)
+            # geom4 = rendering.make_cone(0.1 + entity.size, entity.state.p_pos[0], entity.state.p_pos[1],
+            #                             entity.render_vel[0], entity.render_vel[1])
 
             # add geoms to viewer
             for viewer in self.viewers:
@@ -338,9 +340,15 @@ class MultiAgentEnv(gym.Env):
                 vel=self.agents[i].state.p_vel
             self.viewers[i].set_bounds(pos[0] - cam_range, pos[0] + cam_range, pos[1] - cam_range, pos[1] + cam_range)
             # update geometry positions
+
+
+            from multiagent import rendering
             for e, entity in enumerate(self.world.entities):
                 self.render_geoms_xform[e].set_translation(*entity.state.p_pos)
-                #self.render_geoms_xform[e].set_translation(*entity.state.p_vel)
+
+                #self.render_geoms[e].add_attr(self.render_geoms_xform[e])
+
+
             # render to display or array
             results.append(self.viewers[i].render(return_rgb_array=mode == 'rgb_array'))
 

@@ -198,8 +198,11 @@ class Scenario(BaseScenario):
                         # adver.state.p_vel[0]=0.0
                         # adver.state.p_vel[1] = 0.0
                         rew -= 1000
+        if goal_dist<0.5:
 
-        rew += (1 - goal_dist) * 1000
+            rew += (1 - goal_dist) * 1000
+        else :
+            rew-=goal_dist*1000
 
         return rew
 
