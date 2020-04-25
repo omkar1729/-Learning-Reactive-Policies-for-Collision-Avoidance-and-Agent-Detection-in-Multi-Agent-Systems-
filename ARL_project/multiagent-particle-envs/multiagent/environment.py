@@ -105,6 +105,9 @@ class MultiAgentEnv(gym.Env):
         reward = np.sum(reward_n)
         if self.shared_reward:
             reward_n = [reward] * self.n
+        if(self.world.goal_flag==True):
+
+            print(self.world.goal_flag)
 
         return obs_n, reward_n, done_n, info_n
 
@@ -259,11 +262,11 @@ class MultiAgentEnv(gym.Env):
                     self.render_geoms_xform.append(xform4)
 
                 else:
-                    print(entity.state.p_vel)
+                    print(entity.render_vel)
                     geom = rendering.make_circle(entity.size)
                     # xform = rendering.Transform()
 
-                    geom4 = rendering.make_cone(0.1 + entity.size, entity.state.p_pos[0],entity.state.p_pos[1], entity.state.p_vel[0],entity.state.p_vel[1])
+                    geom4 = rendering.make_cone(0.1 + entity.size, entity.state.p_pos[0],entity.state.p_pos[1], entity.render_vel[0],entity.render_vel[1])
                     xform4 = rendering.Transform()
 
                     if 'agent' in entity.name:
@@ -332,10 +335,12 @@ class MultiAgentEnv(gym.Env):
                 pos = np.zeros(self.world.dim_p)
             else:
                 pos = self.agents[i].state.p_pos
+                vel=self.agents[i].state.p_vel
             self.viewers[i].set_bounds(pos[0] - cam_range, pos[0] + cam_range, pos[1] - cam_range, pos[1] + cam_range)
             # update geometry positions
             for e, entity in enumerate(self.world.entities):
                 self.render_geoms_xform[e].set_translation(*entity.state.p_pos)
+                #self.render_geoms_xform[e].set_translation(*entity.state.p_vel)
             # render to display or array
             results.append(self.viewers[i].render(return_rgb_array=mode == 'rgb_array'))
 

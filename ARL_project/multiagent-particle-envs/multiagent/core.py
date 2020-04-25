@@ -77,6 +77,7 @@ class Entity(object):
         self.state = EntityState()
         # mass
         self.initial_mass = 1.0
+        self.render_vel =[]
 
     @property
     def mass(self):
@@ -113,6 +114,8 @@ class Agent(Entity):
         self.action_callback = None
 
         self.tag_list = []
+
+        self.caught=False
 
 
 # multi-agent world
@@ -201,6 +204,9 @@ class World(object):
         for i, entity in enumerate(self.entities):
             if not entity.movable: continue
             entity.state.p_vel = entity.state.p_vel * (1 - self.damping)
+            #print(entity.state.p_vel)
+            entity.render_vel = entity.state.p_vel
+
             if (p_force[i] is not None):
                 entity.state.p_vel += (p_force[i] / entity.mass) * self.dt
             if entity.max_speed is not None:
