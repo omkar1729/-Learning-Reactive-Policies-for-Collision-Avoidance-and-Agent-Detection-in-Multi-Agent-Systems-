@@ -78,6 +78,7 @@ class Entity(object):
         # mass
         self.initial_mass = 1.0
         self.render_vel =[]
+        self.traj_pos = []
 
     @property
     def mass(self):
