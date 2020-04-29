@@ -243,12 +243,12 @@ class MultiAgentEnv(gym.Env):
                     geom = rendering.make_circle(entity.size)
                     # xform = rendering.Transform()
 
-                    # geom4 = rendering.make_cone(0.1 + entity.size, [entity.state.p_pos], [entity.state.p_vel])
+                    #eom4 = rendering.make_cone(0.1 + entity.size, [entity.state.p_pos], [entity.state.p_vel])
                     xform4 = rendering.Transform()
 
-                    if 'agent' in entity.name:
-                        geom.set_color(*entity.color, alpha=0.5)
-                        # geom4.set_color(*entity.color, alpha=0.5)
+                    # if 'agent' in entity.name:
+                    #     geom.set_color(*entity.color, alpha=0.5)
+                    #     # geom4.set_color(*entity.color, alpha=0.5)
 
                     # geom.set_color(*entity.color)
 
@@ -265,8 +265,9 @@ class MultiAgentEnv(gym.Env):
                     #print(entity.render_vel)
                     geom = rendering.make_circle(entity.size)
                     # xform = rendering.Transform()
-
-                    geom4 = rendering.make_cone(0.1 + entity.size, entity.state.p_pos[0],entity.state.p_pos[1], entity.render_vel[0],entity.render_vel[1])
+                    print(entity.render_vel)
+                    #geom4 = rendering.make_cone(0.1 + entity.size, entity.state.p_pos[0],entity.state.p_pos[1], entity.render_vel[0],entity.render_vel[1])
+                    geom4 = rendering.make_circle(0.1 + entity.size,filled=False)
                     xform4 = rendering.Transform()
 
                     if 'agent' in entity.name:
@@ -313,13 +314,13 @@ class MultiAgentEnv(gym.Env):
             # xform2 = rendering.Transform()
             # self.render_geoms_xform.append(xform2)
             ############################ Environment 2 ############################################################
-            geom2, geom3 = rendering.make_obstacles1(0.1)
-            self.render_geoms.append(geom2)
-            xform2 = rendering.Transform()
-            self.render_geoms_xform.append(xform2)
-            self.render_geoms.append(geom3)
-            xform3 = rendering.Transform()
-            self.render_geoms_xform.append(xform3)
+            # geom2, geom3 = rendering.make_obstacles1(0.1)
+            # self.render_geoms.append(geom2)
+            # xform2 = rendering.Transform()
+            # self.render_geoms_xform.append(xform2)
+            # self.render_geoms.append(geom3)
+            # xform3 = rendering.Transform()
+            # self.render_geoms_xform.append(xform3)
             # geom4 = rendering.make_cone(0.1 + entity.size, entity.state.p_pos[0], entity.state.p_pos[1],
             #                             entity.render_vel[0], entity.render_vel[1])
 

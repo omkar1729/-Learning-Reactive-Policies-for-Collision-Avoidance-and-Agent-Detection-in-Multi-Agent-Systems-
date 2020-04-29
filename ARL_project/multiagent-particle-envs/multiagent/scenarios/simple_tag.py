@@ -31,7 +31,7 @@ class Scenario(BaseScenario):
             landmark.name = 'landmark %d' % i
             landmark.collide = True
             landmark.movable = False
-            landmark.size = 0.1
+            landmark.size = 0.06
             landmark.boundary = False
         # make initial conditions
         self.reset_world(world)
@@ -39,8 +39,8 @@ class Scenario(BaseScenario):
 
     def reset_world(self, world):
 
-        agent_pos = [[0.1, 0.1], [-0.1, -0.1]]
-        advers_pos = [[0.3, -0.3], [-0.3, 0.3]]
+        # agent_pos = [[0.1, 0.1], [-0.1, -0.1]]
+        # advers_pos = [[0.7, -0.7], [-0.7, 0.7]]
 
         adv_cnt = 0
         agnt_cnt = 0
@@ -49,7 +49,7 @@ class Scenario(BaseScenario):
 
         # random properties for agents
         for i, agent in enumerate(world.agents):
-            agent.color = np.array([0.35, 0.85, 0.35]) if not agent.adversary else np.array([0.85, 0.35, 0.35])
+            agent.color = np.array([0.35, 0.35, 0.75]) if not agent.adversary else np.array([0.85, 0.35, 0.35])
             # random properties for landmarks
         for i, landmark in enumerate(world.landmarks):
             landmark.color = np.array([0.25, 0.25, 0.25])
@@ -59,10 +59,10 @@ class Scenario(BaseScenario):
 
             if (agent.adversary):
 
-                agent.state.p_pos = np.asarray(advers_pos[adv_cnt])
+                agent.state.p_pos = np.random.uniform(-0.69, +0.69, world.dim_p)
                 adv_cnt += 1
             else:
-                agent.state.p_pos = np.asarray(agent_pos[agnt_cnt])
+                agent.state.p_pos = np.random.uniform(-0.69, +0.69, world.dim_p)
                 agnt_cnt += 1
 
             # agent.state.p_pos = np.random.uniform(-1, +1, world.dim_p)
@@ -102,12 +102,12 @@ class Scenario(BaseScenario):
                 angle1 = np.arctan2(float(agnt.state.p_pos[0]), float(agnt.state.p_pos[1]))
                 angle2 = np.arctan2(float(agent.state.p_pos[0]), float(agent.state.p_pos[1]))
                 delta_pos = agent.state.p_pos - agnt.state.p_pos
-                # print("in is_tag")
+                #print("in is_tag")
                 if np.sqrt(np.sum(np.square(delta_pos))) <= view_distance + agent.size and abs(
-                        angle1 - angle2) <= 0.785398 and (
+                        angle1 - angle2) <= 6.285714286 and (                                                  #pi/4 replaced with 2pi
                         np.sign((agent.state.p_vel[0])) == np.sign((delta_pos[0])) and (
                         np.sign((agent.state.p_vel[1])) == np.sign((delta_pos[1])))):
-                    # print('tagged')
+                    #print('tagged')
                     lst_pos.append([agent.state.p_pos[0], agent.state.p_pos[1]])
                     lst_vel.append([agent.state.p_vel[0], agent.state.p_vel[1]])
                 # else:
@@ -146,7 +146,7 @@ class Scenario(BaseScenario):
                     dist_from_agnt = np.sqrt(np.sum(np.square(np.asarray(agt) - agent.state.p_pos)))
                     dist_from_goal = np.sqrt(np.sum(np.square(np.asarray(agt) - world.landmarks[0].state.p_pos)))
 
-                    rew += (1 - dist_from_agnt + dist_from_goal) * 1000
+                    rew += (1 - dist_from_agnt + dist_from_goal) * 100
 
         # self.check_reach_goal(agent,world)
 
@@ -159,7 +159,7 @@ class Scenario(BaseScenario):
                     if self.is_collision(a, agent):
                         rew += 500
 
-        rew -= (1 - a_dist_from_goal) * 1000
+        rew -= (1 - a_dist_from_goal) * 100
 
         return rew
 
@@ -184,7 +184,7 @@ class Scenario(BaseScenario):
                 for agt in adver.tag_list:
                     dist = np.sqrt(np.sum(np.square(np.asarray(agt) - adver.state.p_pos)))
 
-                    rew -= 1000 * (1 - dist)
+                    rew -= 100 * (1 - dist)
 
         self.check_reach_goal(adver, world)
         if world.goal_flag:
@@ -200,9 +200,9 @@ class Scenario(BaseScenario):
                         rew -= 1000
         if goal_dist<0.5:
 
-            rew += (1 - goal_dist) * 1000
+            rew += (1 - goal_dist) * 100
         else :
-            rew-=goal_dist*1000
+            rew-=goal_dist*100
 
         return rew
 

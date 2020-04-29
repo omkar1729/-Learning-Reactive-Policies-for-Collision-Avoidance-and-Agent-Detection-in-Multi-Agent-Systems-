@@ -332,7 +332,7 @@ def make_obstacles1(filled=True):
         return rect1, rect2
 
 
-def make_cone(radius=10.0, res=80, filled=False, centre_x=0,centre_y=0, vel_x=0,vel_y=0):
+def make_cone(radius=10.0, res=80, filled=True, centre_x=0,centre_y=0, vel_x=0,vel_y=0):
     points = []
     res=80
     print(vel_x,vel_y)
@@ -341,15 +341,15 @@ def make_cone(radius=10.0, res=80, filled=False, centre_x=0,centre_y=0, vel_x=0,
     angle_final = angle + 0.392
     delta = 0.785398 / float(res)
     points.append((centre_x, centre_y))
-    points.append((radius * math.cos(angle),radius * math.sin(angle)))
+    # points.append((radius * math.cos(angle),radius * math.sin(angle)))
 
-    # angle = angle_init
-    # while (res):
-    #     points.append((math.cos(angle) * radius, math.sin(angle) * radius))
-    #     angle = angle + delta
-    #     res -= 1
+    angle = angle_init
+    while (res):
+        points.append((math.cos(angle) * radius, math.sin(angle) * radius))
+        angle = angle + delta
+        res -= 1
 
-
+    points.append((centre_x, centre_y))
     if filled:
         return FilledPolygon(points)
     else:

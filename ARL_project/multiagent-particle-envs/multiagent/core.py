@@ -5,8 +5,8 @@ class Wall:
     def __init__(self):
         self.x_c = 0
         self.y_c = 0
-        self.height = 0.8
-        self.width = 0.8
+        self.height = 0.9
+        self.width = 0.9
 
     def check_wall(self, x, y):
 
