@@ -41,7 +41,7 @@ class Scenario(BaseScenario):
 
         agent_pos = [[0.1, 0.1], [-0.1, -0.1]]
         advers_pos = [[0.3, -0.3], [-0.3, 0.3]]
-
+        
         adv_cnt = 0
         agnt_cnt = 0
 
@@ -56,7 +56,7 @@ class Scenario(BaseScenario):
         # set random initial states
 
         for agent in world.agents:
-
+            agent.traj_pos = []
             if (agent.adversary):
 
                 agent.state.p_pos = np.asarray(advers_pos[adv_cnt])
@@ -136,7 +136,7 @@ class Scenario(BaseScenario):
         # Agents are negatively rewarded if caught by adversaries
         rew = 0
         shape = True
-
+        agent.traj_pos.append(agent.state.p_pos)
         adversaries = self.adversaries(world)
         if shape:  # reward can optionally be shaped (increased reward for increased distance from adversary)
             a_dist_from_goal = np.sqrt(np.sum(np.square(agent.state.p_pos - world.landmarks[0].state.p_pos)))
