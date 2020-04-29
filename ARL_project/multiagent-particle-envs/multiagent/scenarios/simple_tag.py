@@ -38,7 +38,7 @@ class Scenario(BaseScenario):
         return world
 
     def reset_world(self, world):
-
+        pickle_list = []
         agent_pos = [[0.1, 0.1], [-0.1, -0.1]]
         advers_pos = [[0.3, -0.3], [-0.3, 0.3]]
         
@@ -56,6 +56,7 @@ class Scenario(BaseScenario):
         # set random initial states
 
         for agent in world.agents:
+            pickle_list.append(agent.traj_pos)
             agent.traj_pos = []
             if (agent.adversary):
 
@@ -72,6 +73,8 @@ class Scenario(BaseScenario):
             if not landmark.boundary:
                 landmark.state.p_pos = np.random.uniform(-0.0, +0.0, world.dim_p)
                 landmark.state.p_vel = np.zeros(world.dim_p)
+        with open("Trajectory.pkl","rb+") as traj:
+            pickle.dump(pickle_list,traj)
 
     def benchmark_data(self, agent, world):
         # returns data for benchmarking purposes
