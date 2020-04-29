@@ -267,7 +267,7 @@ class MultiAgentEnv(gym.Env):
                     # xform = rendering.Transform()
                     print(entity.render_vel)
                     #geom4 = rendering.make_cone(0.1 + entity.size, entity.state.p_pos[0],entity.state.p_pos[1], entity.render_vel[0],entity.render_vel[1])
-                    geom4 = rendering.make_circle(0.1 + entity.size,filled=False)
+                    geom4 = rendering.make_circle(0.2 + entity.size,filled=False)
 
                     xform4 = rendering.Transform()
 

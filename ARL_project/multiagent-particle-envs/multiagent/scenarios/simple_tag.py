@@ -1,3 +1,5 @@
+import pickle
+
 import numpy as np
 from multiagent.core import World, Agent, Landmark, Wall
 from multiagent.scenario import BaseScenario
@@ -41,7 +43,7 @@ class Scenario(BaseScenario):
 
         # agent_pos = [[0.1, 0.1], [-0.1, -0.1]]
         # advers_pos = [[0.7, -0.7], [-0.7, 0.7]]
-
+        pickle_list = []
         adv_cnt = 0
         agnt_cnt = 0
 
@@ -56,7 +58,8 @@ class Scenario(BaseScenario):
         # set random initial states
 
         for agent in world.agents:
-
+            pickle_list.append(agent.traj_pos)
+            agent.traj_pos = []
             if (agent.adversary):
 
                 agent.state.p_pos = np.random.uniform(-0.69, +0.69, world.dim_p)
@@ -72,6 +75,9 @@ class Scenario(BaseScenario):
             if not landmark.boundary:
                 landmark.state.p_pos = np.random.uniform(-0.0, +0.0, world.dim_p)
                 landmark.state.p_vel = np.zeros(world.dim_p)
+
+        with open("Trajectory.pkl", "rb+") as traj:
+            pickle.dump(pickle_list, traj)
 
     def benchmark_data(self, agent, world):
         # returns data for benchmarking purposes
@@ -93,7 +99,7 @@ class Scenario(BaseScenario):
     def is_tag(self, agent, world):
         lst_pos = []
         lst_vel = []
-        view_distance = 0.1
+        view_distance = 0.2
         Agent_type = agent.adversary
 
         for agnt in world.agents:
@@ -146,7 +152,7 @@ class Scenario(BaseScenario):
                     dist_from_agnt = np.sqrt(np.sum(np.square(np.asarray(agt) - agent.state.p_pos)))
                     dist_from_goal = np.sqrt(np.sum(np.square(np.asarray(agt) - world.landmarks[0].state.p_pos)))
 
-                    rew += (1 - dist_from_agnt + dist_from_goal) * 100
+                    rew += ( dist_from_goal) * 100
 
         # self.check_reach_goal(agent,world)
 
@@ -157,9 +163,9 @@ class Scenario(BaseScenario):
             for a in adversaries:
                 if a.adversary:
                     if self.is_collision(a, agent):
-                        rew += 500
+                        rew += 1000
 
-        rew -= (1 - a_dist_from_goal) * 100
+        rew -= (1 - a_dist_from_goal) * 50
 
         return rew
 
